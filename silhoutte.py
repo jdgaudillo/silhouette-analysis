@@ -130,20 +130,34 @@ def analysis(X, algo):
         clusterer = KMeans(n_clusters=n_clusters, random_state=42) 
 
         cluster_labels = clusterer.fit_predict(X)
-        randomClusterLabels(n_clusters, cluster_labels)
 
         # The silhouette_score gives the average value for all the samples.
         # This gives a perspective into the density and separation of the formed
         # clusters
 
+        len_X = len(X)
+        ind = np.arange(len(X))
+        rnd_ind = np.random.choice(ind, 1000)
+        cluster_labels = cluster_labels[rnd_ind]
+        cond = True
+
+        while cond == True:
+            count_val = np.unique(cluster_labels)
+            if (len(count_val) == 1) | (len(count_val) == 0):
+                cond = True
+            else:
+                cond = False
+
+        X_rand = X[ind]
+
         
-        silhouette_avg = silhouette_score(X, cluster_labels)
+        silhouette_avg = silhouette_score(X_rand, cluster_labels)
         print("For n_clusters =", n_clusters,
               "The average silhouette_score is :", silhouette_avg)
 
 
         # Compute the silhouette scores for each sample
-        sample_silhouette_values = silhouette_samples(X, cluster_labels)
+        sample_silhouette_values = silhouette_samples(X_rand, cluster_labels)
 
         y_lower = 10
         for i in range(n_clusters):
